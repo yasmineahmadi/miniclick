@@ -26,7 +26,7 @@ const db = new sqlite3.Database('./urls.db', (err) => {
     is_pro INTEGER DEFAULT 0
   )`);
    // Update urls table (drop and recreate for simplicity, or alter in production)
-  db.run(`DROP TABLE IF EXISTS urls`);
+  //db.run(`DROP TABLE IF EXISTS urls`);
   db.run(`CREATE TABLE IF NOT EXISTS urls (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     original_url TEXT NOT NULL,
