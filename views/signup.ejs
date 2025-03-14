@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup - MiniClick</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Sign Up for MiniClick</h1>
+    <% if (error) { %>
+      <p class="text-red-500 text-center mb-4"><%= error %></p>
+    <% } %>
+    <form action="/signup" method="POST" class="space-y-4">
+      <input type="email" name="email" placeholder="Email" required 
+             class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <input type="password" name="password" placeholder="Password" required 
+             class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button type="submit" 
+              class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition duration-200">
+        Sign Up
+      </button>
+    </form>
+    <p class="mt-4 text-center text-gray-600">
+      Already have an account? <a href="/login" class="text-blue-600 hover:underline">Login</a>
+    </p>
+  </div>
+</body>
+</html>

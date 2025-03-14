@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MiniClick</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="max-w-lg w-full bg-white p-8 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">MiniClick</h1>
+    <p class="text-center text-gray-600 mb-6">Shorten URLs and track clicks. Free tier: 5 links/month. Pro: $2/month.</p>
+    <form id="shortenForm" action="/shorten" method="POST" class="space-y-4">
+      <input type="text" name="url" placeholder="Enter your URL (e.g., https://example.com)" required 
+             class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <input type="text" name="customCode" id="customCode" placeholder="Custom code (watch ad to enable)" 
+             class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
+      <button type="submit" 
+              class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition duration-200">
+        Shorten It!
+      </button>
+    </form>
+    <button id="watchAdBtn" class="w-full mt-4 bg-green-600 text-white p-3 rounded hover:bg-green-700 transition duration-200">
+      Watch Ad for Custom URL
+    </button>
+    <div id="result" class="mt-4 text-center text-green-600 font-medium"></div>
+    <% if (!user) { %>
+      <div class="mt-6 text-center">
+        <a href="/login" class="text-blue-600 hover:underline">Login</a> | 
+        <a href="/signup" class="text-blue-600 hover:underline">Sign Up</a>
+      </div>
+    <% } else { %>
+      <div class="mt-6 text-center">
+        <p class="text-gray-700">Welcome back! 
+          <a href="/dashboard" class="text-blue-600 hover:underline">Dashboard</a> | 
+          <a href="/logout" class="text-blue-600 hover:underline">Logout</a>
+        </p>
+      </div>
+    <% } %>
+  </div>
+
+  <script>
+    const watchAdBtn = document.getElementById('watchAdBtn');
+    const customCodeInput = document.getElementById('customCode');
+    let adWatched = false;
+
+    watchAdBtn.addEventListener('click', async () => {
+  watchAdBtn.disabled = true;
+  watchAdBtn.textContent = 'Watching Ad...';
+  // Example Adsterra video ad (replace with actual script)
+  window.open('https://adsterra.com/video-ad', '_blank');
+  await new Promise(resolve => setTimeout(resolve, 15000)); // 15s ad
+  adWatched = true;
+  customCodeInput.disabled = false;
+  watchAdBtn.textContent = 'Ad Watched! Enter Custom Code';
+  watchAdBtn.disabled = false;
+});
+
+    document.getElementById('shortenForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = document.querySelector('input[name="url"]').value;
+      const customCode = customCodeInput.value;
+      const body = `url=${encodeURIComponent(url)}${customCode ? `&customCode=${encodeURIComponent(customCode)}&adWatched=${adWatched}` : ''}`;
+      const res = await fetch('/shorten', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
+        body 
+      });
+      const text = await res.text();
+      document.getElementById('result').innerHTML = text.replace('Short URL:', '').trim();
+      if (customCode) {
+        customCodeInput.disabled = true; // Reset after use
+        customCodeInput.value = '';
+        adWatched = false;
+        watchAdBtn.textContent = 'Watch Ad for Custom URL';
+      }
+    });
+  </script>
+</body>
+</html>
