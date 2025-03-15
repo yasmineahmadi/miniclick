@@ -2,56 +2,238 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - MiniClick</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Your MiniClick Dashboard</h1>
-      <div>
-        <a href="/" class="text-blue-600 hover:underline mr-4">Home</a>
-        <a href="/logout" class="text-blue-600 hover:underline">Logout</a>
+<body class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen font-sans">
+  <nav class="bg-white shadow-sm backdrop-filter backdrop-blur-lg bg-opacity-90 sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <a href="/" class="flex-shrink-0 flex items-center">
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-2 rounded-lg">
+              <i class="fas fa-link text-xl"></i>
+            </div>
+            <span class="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 ml-2">MiniClick</span>
+          </a>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+          <a href="/logout" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition duration-150">Logout</a>
+        </div>
       </div>
     </div>
+  </nav>
 
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800">Your Dashboard</h1>
+      <div class="flex space-x-2">
+        <button id="createLinkBtn" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg flex items-center hover:from-blue-600 hover:to-indigo-700 transition duration-150 shadow-md">
+          <i class="fas fa-plus mr-2"></i>
+          New Link
+        </button>
+      </div>
+    </div>
     
     <% if (!isPro) { %>
-      <div class="bg-yellow-100 p-4 rounded mb-6 text-center">
-        <p class="text-yellow-800">Free Tier: 5 links/month. 
-          <a href="#" class="text-blue-600 hover:underline">Upgrade to Pro ($2/month)</a>
-        </p>
+      <div class="bg-gradient-to-r from-amber-100 to-yellow-100 border-l-4 border-yellow-500 p-5 rounded-lg mb-8 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <i class="fas fa-star text-yellow-500 text-xl mr-3"></i>
+            <div>
+              <p class="text-yellow-800 font-medium">Free Tier: <span class="font-bold">5 links/month</span></p>
+              <p class="text-yellow-700 text-sm mt-1">You've used 3 of your 5 links this month</p>
+            </div>
+          </div>
+          <a href="#" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-5 py-2 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition duration-150 shadow-sm flex items-center">
+            <i class="fas fa-crown mr-2"></i>
+            Upgrade to Pro
+            <span class="ml-1 text-blue-200">$2/mo</span>
+          </a>
+        </div>
       </div>
     <% } else { %>
-      <div class="bg-green-100 p-4 rounded mb-6 text-center">
-        <p class="text-green-800">Pro Tier: Unlimited links!</p>
+      <div class="bg-gradient-to-r from-emerald-50 to-green-100 border-l-4 border-green-500 p-5 rounded-lg mb-8 shadow-sm">
+        <div class="flex items-center">
+          <i class="fas fa-crown text-green-500 text-xl mr-3"></i>
+          <div>
+            <p class="text-green-800 font-medium">Pro Tier: <span class="font-bold">Unlimited links</span></p>
+            <p class="text-green-700 text-sm mt-1">Thank you for your support!</p>
+          </div>
+        </div>
       </div>
     <% } %>
-    <h2 class="text-xl font-semibold text-gray-700 mb-4">Your Links</h2>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-3 font-semibold text-gray-700">Short URL</th>
-            <th class="p-3 font-semibold text-gray-700">Original URL</th>
-            <th class="p-3 font-semibold text-gray-700">Clicks</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% links.forEach(link => { %>
-            <tr class="border-b hover:bg-gray-50">
-              <td class="p-3">
-                <a href="/<%= link.short_code %>" class="text-blue-600 hover:underline">
-                  <%= link.short_code %>
-                </a>
-              </td>
-              <td class="p-3 text-gray-600 truncate max-w-xs"><%= link.original_url %></td>
-              <td class="p-3 text-gray-600"><%= link.clicks %></td>
+
+    <div id="createLinkForm" class="bg-white p-6 rounded-lg shadow-md mb-8 hidden">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Create New Link</h2>
+      <form class="space-y-4">
+        <div>
+          <label for="originalUrl" class="block text-sm font-medium text-gray-700 mb-1">Original URL</label>
+          <input type="url" id="originalUrl" name="originalUrl" placeholder="https://example.com/your-long-url" required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        <div>
+          <label for="customCode" class="block text-sm font-medium text-gray-700 mb-1">Custom Code (Optional)</label>
+          <div class="flex">
+            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+              miniclick.com/
+            </span>
+            <input type="text" id="customCode" name="customCode" placeholder="custom-code" 
+                  class="flex-1 min-w-0 block w-full px-3 py-2 rounded-r-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+        </div>
+        <div class="flex justify-end space-x-3">
+          <button type="button" id="cancelCreate" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+            Create Link
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold text-gray-800">Your Links</h2>
+          <div class="relative">
+            <input type="text" placeholder="Search links..." class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+            <i class="fas fa-search absolute right-3 top-2.5 text-gray-400"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Short URL</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original URL</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clicks</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
-          <% }); %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% links.forEach(link => { %>
+              <tr class="hover:bg-gray-50 transition duration-150">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <a href="/<%= link.short_code %>" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium">
+                      miniclick.com/<%= link.short_code %>
+                    </a>
+                    <button class="ml-2 text-gray-400 hover:text-gray-600" title="Copy to clipboard">
+                      <i class="far fa-copy"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm text-gray-700 truncate max-w-xs" title="<%= link.original_url %>">
+                    <%= link.original_url %>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <i class="fas fa-chart-line text-indigo-500 mr-2"></i>
+                    <span class="text-gray-700 font-medium"><%= link.clicks %></span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= link.created_at || '2 days ago' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                  <div class="flex space-x-2">
+                    <button class="text-blue-600 hover:text-blue-800" title="View analytics">
+                      <i class="fas fa-chart-bar"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-800" title="Edit link">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="text-red-600 hover:text-red-800" title="Delete link">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+            <!-- If no links exist, show empty state -->
+            <% if (!links || links.length === 0) { %>
+              <tr>
+                <td colspan="5" class="px-6 py-10 text-center">
+                  <div class="text-gray-500">
+                    <i class="fas fa-link text-4xl mb-3 opacity-30"></i>
+                    <p class="text-lg font-medium">No links yet</p>
+                    <p class="text-sm mt-1">Create your first shortened link to get started</p>
+                  </div>
+                </td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-gray-500">Showing <span class="font-medium"><%= links ? links.length : 0 %></span> links</span>
+          <div class="flex space-x-2">
+            <button class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50" disabled>
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <footer class="bg-white py-6 border-t mt-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-2 rounded-lg">
+            <i class="fas fa-link text-xl"></i>
+          </div>
+          <span class="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 ml-2">MiniClick</span>
+        </div>
+        <div class="flex space-x-8">
+          <a href="#" class="text-gray-500 hover:text-gray-700">Help</a>
+          <a href="#" class="text-gray-500 hover:text-gray-700">Privacy</a>
+          <a href="#" class="text-gray-500 hover:text-gray-700">Terms</a>
+        </div>
+        <div class="flex space-x-4 mt-4 md:mt-0">
+          <a href="#" class="text-gray-400 hover:text-gray-600"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-gray-400 hover:text-gray-600"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-gray-400 hover:text-gray-600"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="mt-4 text-center md:text-left">
+        <p class="text-gray-500 text-sm">© 2025 MiniClick. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle create link form
+    const createLinkBtn = document.getElementById('createLinkBtn');
+    const createLinkForm = document.getElementById('createLinkForm');
+    const cancelCreate = document.getElementById('cancelCreate');
+    
+    createLinkBtn.addEventListener('click', function() {
+      createLinkForm.classList.toggle('hidden');
+    });
+    
+    cancelCreate.addEventListener('click', function() {
+      createLinkForm.classList.add('hidden');
+    });
+    
+    // Copy to clipboard functionality would go here
+    // Analytics toggle would go here
+  </script>
 </body>
 </html>

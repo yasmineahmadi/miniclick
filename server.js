@@ -36,7 +36,7 @@ db.run(`CREATE TABLE IF NOT EXISTS urls (
 )`);
 
 app.use(session({
-  secret: 'miniclick_secret', // Change this in production!
+  secret: 'miniclick_secret', //! Change this in production!
   resave: false,
   saveUninitialized: false,
 }));

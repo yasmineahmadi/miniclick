@@ -2,63 +2,206 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MiniClick</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniClick | URL Shortener</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-  <div class="max-w-lg w-full bg-white p-8 rounded-lg shadow-lg">
-    <h1 class="text-3xl font-bold text-center text-gray-800 mb-4">MiniClick</h1>
-    <p class="text-center text-gray-600 mb-6">Shorten URLs and track clicks. Free tier: 5 links/month. Pro: $2/month.</p>
-    <form id="shortenForm" action="/shorten" method="POST" class="space-y-4">
-      <input type="text" name="url" placeholder="Enter your URL (e.g., https://example.com)" required 
-             class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-      <input type="text" name="customCode" id="customCode" placeholder="Custom code (watch ad to enable)" 
-             class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" disabled>
-      <button type="submit" 
-              class="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition duration-200">
-        Shorten It!
-      </button>
-    </form>
-    <button id="watchAdBtn" class="w-full mt-4 bg-green-600 text-white p-3 rounded hover:bg-green-700 transition duration-200">
-      Watch Ad for Custom URL
-    </button>
-    <div id="result" class="mt-4 text-center text-green-600 font-medium"></div>
-    <% if (!user) { %>
-      <div class="mt-6 text-center">
-        <a href="/login" class="text-blue-600 hover:underline">Login</a> | 
-        <a href="/signup" class="text-blue-600 hover:underline">Sign Up</a>
+<body class="bg-gradient-to-r from-blue-50 to-purple-50 min-h-screen font-sans">
+  <nav class="bg-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-link text-blue-600 text-2xl mr-2"></i>
+            <span class="font-bold text-xl text-blue-600">MiniClick</span>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <% if (!user) { %>
+            <a href="/login" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+            <a href="/signup" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 ml-3">Sign Up</a>
+          <% } else { %>
+            <a href="/dashboard" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+            <a href="/logout" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium ml-3">Logout</a>
+          <% } %>
+        </div>
       </div>
-    <% } else { %>
-      <div class="mt-6 text-center">
-        <p class="text-gray-700">Welcome back! 
-          <a href="/dashboard" class="text-blue-600 hover:underline">Dashboard</a> | 
-          <a href="/logout" class="text-blue-600 hover:underline">Logout</a>
-        </p>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+      <div class="md:flex">
+        <div class="md:w-1/2 bg-gradient-to-br from-blue-600 to-purple-600 p-10 text-white flex flex-col justify-center">
+          <h1 class="text-4xl font-extrabold tracking-tight mb-4">Shorten URLs, Expand Possibilities</h1>
+          <p class="text-lg text-blue-100 mb-6">Create memorable short links and track their performance with MiniClick's powerful analytics.</p>
+          <div class="flex flex-col space-y-4">
+            <div class="flex items-center">
+              <div class="bg-white/20 rounded-full p-2 mr-3">
+                <i class="fas fa-bolt text-white"></i>
+              </div>
+              <span>Fast and reliable redirects</span>
+            </div>
+            <div class="flex items-center">
+              <div class="bg-white/20 rounded-full p-2 mr-3">
+                <i class="fas fa-chart-line text-white"></i>
+              </div>
+              <span>Detailed click analytics</span>
+            </div>
+            <div class="flex items-center">
+              <div class="bg-white/20 rounded-full p-2 mr-3">
+                <i class="fas fa-lock text-white"></i>
+              </div>
+              <span>Secure and private</span>
+            </div>
+          </div>
+        </div>
+        <div class="md:w-1/2 p-10">
+          <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-800">Create Your Short URL</h2>
+            <p class="text-gray-500 mt-2">Free tier: 5 links/month. Pro: $2/month for unlimited links.</p>
+          </div>
+          <form id="shortenForm" action="/shorten" method="POST" class="space-y-4">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-globe text-gray-400"></i>
+              </div>
+              <input type="text" name="url" placeholder="https://example.com/your-long-url" required 
+                     class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-tag text-gray-400"></i>
+              </div>
+              <input type="text" name="customCode" id="customCode" placeholder="Custom code (watch ad or go Pro to enable)" 
+                     class="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-not-allowed bg-gray-50" disabled>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center font-medium">
+              <i class="fas fa-link mr-2"></i>
+              Shorten URL
+            </button>
+          </form>
+
+          <button id="watchAdBtn" class="w-full mt-4 bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-200 flex items-center justify-center font-medium">
+            <i class="fas fa-ad mr-2"></i>
+            Watch Ad for Custom URL
+          </button>
+
+          <div id="resultContainer" class="mt-6 hidden">
+            <div class="p-4 bg-blue-50 rounded-lg">
+              <p class="text-gray-700 mb-2">Your short URL is ready:</p>
+              <div class="flex">
+                <input id="resultUrl" type="text" value="" readonly class="w-full p-2 border border-gray-300 rounded-l-lg bg-white">
+                <button id="copyBtn" class="bg-blue-600 text-white px-4 rounded-r-lg hover:bg-blue-700">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <p id="copySuccess" class="text-green-600 text-sm mt-2 hidden">Copied to clipboard!</p>
+            </div>
+          </div>
+        </div>
       </div>
-    <% } %>
-  </div>
+    </div>
+
+    <div class="mt-16 grid md:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="text-blue-600 text-4xl mb-4">
+          <i class="fas fa-tachometer-alt"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Lightning Fast</h3>
+        <p class="text-gray-600">Our optimized infrastructure ensures your links load quickly every time.</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="text-blue-600 text-4xl mb-4">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Secure & Private</h3>
+        <p class="text-gray-600">Your data is encrypted and we never sell your information to third parties.</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="text-blue-600 text-4xl mb-4">
+          <i class="fas fa-chart-pie"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">Detailed Analytics</h3>
+        <p class="text-gray-600">Track clicks, geographic location, and devices with our Pro plan.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-8 mt-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="md:flex md:justify-between">
+        <div class="mb-6 md:mb-0">
+          <div class="flex items-center">
+            <i class="fas fa-link text-blue-400 text-2xl mr-2"></i>
+            <span class="font-bold text-xl">MiniClick</span>
+          </div>
+          <p class="mt-2 text-gray-400">Simplify your links, amplify your reach.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-8 md:gap-16">
+          <div>
+            <h3 class="font-semibold mb-4">Product</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-400 hover:text-white">Features</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Pricing</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">API</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Support</h3>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 border-t border-gray-700 pt-6 flex flex-col md:flex-row md:justify-between">
+        <p class="text-gray-400">© 2025 MiniClick. All rights reserved.</p>
+        <div class="flex space-x-4 mt-4 md:mt-0">
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script>
     const watchAdBtn = document.getElementById('watchAdBtn');
     const customCodeInput = document.getElementById('customCode');
+    const resultContainer = document.getElementById('resultContainer');
+    const resultUrl = document.getElementById('resultUrl');
+    const copyBtn = document.getElementById('copyBtn');
+    const copySuccess = document.getElementById('copySuccess');
     let adWatched = false;
 
     watchAdBtn.addEventListener('click', async () => {
-  watchAdBtn.disabled = true;
-  watchAdBtn.textContent = 'Watching Ad...';
-  // Example Adsterra video ad (replace with actual script)
-  window.open('https://adsterra.com/video-ad', '_blank');
-  await new Promise(resolve => setTimeout(resolve, 15000)); // 15s ad
-  adWatched = true;
-  customCodeInput.disabled = false;
-  watchAdBtn.textContent = 'Ad Watched! Enter Custom Code';
-  watchAdBtn.disabled = false;
-});
+      watchAdBtn.disabled = true;
+      watchAdBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Watching Ad...';
+      // Example Adsterra video ad (replace with actual script)
+      window.open('https://adsterra.com/video-ad', '_blank');
+      await new Promise(resolve => setTimeout(resolve, 15000)); // 15s ad
+      adWatched = true;
+      customCodeInput.disabled = false;
+      customCodeInput.classList.remove('cursor-not-allowed', 'bg-gray-50');
+      customCodeInput.focus();
+      watchAdBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Ad Watched! Enter Custom Code';
+      watchAdBtn.disabled = false;
+    });
 
     document.getElementById('shortenForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const url = document.querySelector('input[name="url"]').value;
       const customCode = customCodeInput.value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+      
       const body = `url=${encodeURIComponent(url)}${customCode ? `&customCode=${encodeURIComponent(customCode)}&adWatched=${adWatched}` : ''}`;
       const res = await fetch('/shorten', { 
         method: 'POST', 
@@ -66,13 +209,38 @@
         body 
       });
       const text = await res.text();
-      document.getElementById('result').innerHTML = text.replace('Short URL:', '').trim();
+      
+      submitBtn.innerHTML = '<i class="fas fa-link mr-2"></i> Shorten URL';
+      submitBtn.disabled = false;
+      
+      if (text.includes('Error') || text.includes('Invalid')) {
+        alert(text);
+        return;
+      }
+      
+      const shortUrl = text.replace('Short URL:', '').trim();
+      resultUrl.value = shortUrl;
+      resultContainer.classList.remove('hidden');
+      
       if (customCode) {
-        customCodeInput.disabled = true; // Reset after use
+        customCodeInput.disabled = true;
+        customCodeInput.classList.add('cursor-not-allowed', 'bg-gray-50');
         customCodeInput.value = '';
         adWatched = false;
-        watchAdBtn.textContent = 'Watch Ad for Custom URL';
+        watchAdBtn.innerHTML = '<i class="fas fa-ad mr-2"></i> Watch Ad for Custom URL';
       }
+      
+      // Scroll to result
+      resultContainer.scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    copyBtn.addEventListener('click', () => {
+      resultUrl.select();
+      document.execCommand('copy');
+      copySuccess.classList.remove('hidden');
+      setTimeout(() => {
+        copySuccess.classList.add('hidden');
+      }, 3000);
     });
   </script>
 </body>
