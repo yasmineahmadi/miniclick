@@ -132,7 +132,7 @@
                     <a href="<%= process.env.BASE_URL %>/<%= link.shortCode %>" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium">
                       <%= process.env.BASE_URL %>/<%= link.shortCode %>
                     </a>
-                    <button class="ml-2 text-gray-400 hover:text-gray-600" title="Copy to clipboard" onclick="navigator.clipboard.writeText('https://mc.tn/<%= link.shortCode %>')">
+                    <button class="ml-2 text-gray-400 hover:text-gray-600" title="Copy to clipboard" onclick="navigator.clipboard.writeText('<%= process.env.BASE_URL %>/<%= link.shortCode %>')">
                       <i class="far fa-copy"></i>
                     </button>
                   </div>
